@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sample.sirin.spring.domain.BaseEntity;
@@ -32,5 +33,14 @@ public class Product extends BaseEntity {
     private String name;
 
     private int price;
+
+    @Builder
+    private Product(String productNumber, ProductType type, SellingStatus sellingStatus, String name, int price) {
+        this.productNumber = productNumber;
+        this.type = type;
+        this.sellingStatus = sellingStatus;
+        this.name = name;
+        this.price = price;
+    }
 
 }
