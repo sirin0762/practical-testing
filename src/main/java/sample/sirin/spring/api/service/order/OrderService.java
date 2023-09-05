@@ -8,11 +8,11 @@ import sample.sirin.spring.domain.order.Order;
 import sample.sirin.spring.domain.order.OrderRepository;
 import sample.sirin.spring.domain.product.Product;
 import sample.sirin.spring.domain.product.ProductRepository;
-import sample.sirin.spring.domain.product.ProductType;
-import sample.sirin.spring.domain.product.SellingStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class OrderService {
 
     public OrderResponse createOrder(OrderCreateRequest request, LocalDateTime registeredDateTime) {
         List<String> productNumbers = request.getProductNumbers();
-        List<Product> products = productRepository.findAllByProductNumberIn(productNumbers);
+        List<Product> products = findProductsBy(productNumbers);
 
         Order order = Order.create(products, registeredDateTime);
         Order savedOrder = orderRepository.save(order);
@@ -31,14 +31,14 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    private static Product createProduct(String productNumber, ProductType productType, SellingStatus sellingStatus, String name, int price) {
-        return Product.builder()
-            .productNumber(productNumber)
-            .type(productType)
-            .sellingStatus(sellingStatus)
-            .name(name)
-            .price(price)
-            .build();
+    private List<Product> findProductsBy(List<String> productNumbers) {
+        List<Product> products = productRepository.findAllByProductNumberIn(productNumbers);
+        Map<String, Product> productMap = products.stream()
+            .collect(Collectors.toMap(Product::getProductNumber, p -> p));
+
+        return productNumbers.stream()
+            .map(productMap::get)
+            .toList();
     }
 
 }

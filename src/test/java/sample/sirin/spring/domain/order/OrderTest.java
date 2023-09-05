@@ -52,6 +52,7 @@ class OrderTest {
         LocalDateTime registeredDateTime = LocalDateTime.now();
         Order order = Order.create(products, registeredDateTime);
 
+
         // then
         assertThat(order.getRegisteredDateTime()).isEqualTo(registeredDateTime);
     }
