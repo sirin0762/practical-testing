@@ -12,6 +12,9 @@ spring:
     hibernate:
       ddl-auto: none
 
+server:
+  port: 9100
+
 ---
 spring:
   config:
